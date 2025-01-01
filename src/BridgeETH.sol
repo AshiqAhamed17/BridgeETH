@@ -12,7 +12,7 @@ contract BridgeETH {
     address tokenAddress;
     mapping(address => uint256) pendingBalance;
 
-    constructor(address _tokenAddress) Ownable(msg.sender) {
+    constructor(address _tokenAddress) {
         tokenAddress = _tokenAddress;
     }
 
