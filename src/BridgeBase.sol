@@ -11,14 +11,15 @@ contract BridgeBase is Ownable {
 
     }
 
-    function mint(address _to, uint _amount) public {
-        _mint(_to, _amount);
+    function withdraw() public {
+        
+    }
 
     function burn() public {
 
     }
 
-    function depositHappendOnOtherSide() public {
+    function burnedOnOppositeChain() public {
 
     }
 }
