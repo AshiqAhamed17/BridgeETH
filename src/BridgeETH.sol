@@ -12,20 +12,26 @@ contract BridgeETH {
     address tokenAddress;
     mapping(address => uint256) pendingBalance;
 
-    constructor(address _tokenAddress) {
+    event Deposit(address indexed depositor, uint _amount);
+
+    constructor(address _tokenAddress) Ownable(msg.sender) 
         tokenAddress = _tokenAddress;
     }
 
-    function deposit(IERC20 _tokenAddress, uint256 _amount) public {
+    function lock(IERC20 _tokenAddress, uint256 _amount) public {
         require(address(_tokenAddress) == tokenAddress);
         require(_tokenAddress.allowance(msg.sender, address(this)) >= _amount);
-        _tokenAddress.transferFrom(msg.sender, address(this), _amount);
-        pendingBalance[msg.sender] += _amount;
+        require(_tokenAddress.transferFrom(msg.sender, address(this), _amount));
+        emit Deposit(msg.sender, _amount);
     }
 
-    function withdraw(IERC20 _tokenAddress, uint256 _amount) public {
+    function unlock(IERC20 _tokenAddress, uint256 _amount) public {
         require(pendingBalance[msg.sender] >= _amount);
         pendingBalance[msg.sender] -= _amount;
         _tokenAddress.transfer(msg.sender, _amount);
+    }
+
+    function burnOnOtherSide(address userAmount, uint _amount) public onlyOwner {
+        pendingBalance[userAmount] += _amount;
     }
 }
